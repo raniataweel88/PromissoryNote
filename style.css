@@ -1,0 +1,40 @@
+ body {
+    font-family:"Segoe UI","Noto Naskh Arabic",sans-serif;
+    direction:rtl;
+    background:#f3f3f3;
+    padding:20px;
+  }
+  .form-wrapper {
+    max-width:700px;
+    margin:auto;
+    background:#fff;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 4px 10px rgba(0,0,0,.1);
+  }
+  .form-row {
+    display: flex;
+    gap: 20px; /* فراغ بين العمودين */
+    margin-top: 10px;
+  }
+  .form-row label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .form-row .field {
+    flex: 1; /* كل حقل ياخد نصف العرض */
+
+  }
+  
+  .form-row input {
+    width: 100%;
+    padding: 6px;
+        font-size: large;
+
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  button{margin-top:12px;padding:10px 16px;background:#2b6cb0;color:#fff;border:none;border-radius:6px;cursor:pointer;    font-size: large;
+}
+  button:hover{background:#234b87;}
