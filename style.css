@@ -4,6 +4,9 @@
     background:#f3f3f3;
     padding:20px;
   }
+
+/* ===== تحسين المظهر على الشاشات الصغيرة ===== */
+
   .form-wrapper {
     max-width:700px;
     margin:auto;
@@ -35,6 +38,38 @@
     border: 1px solid #ccc;
     border-radius: 6px;
   }
-  button{margin-top:12px;padding:10px 16px;background:#2b6cb0;color:#fff;border:none;border-radius:6px;cursor:pointer;    font-size: large;
+  button{margin-top:12px;padding:10px 16px;background:#2b6cb0;color:#fff;border:none;border-radius:6px;cursor:pointer; 
+       font-size: large;
 }
   button:hover{background:#234b87;}
+
+  @media (max-width: 600px) {
+  body {
+    font-size: 20px;
+  }
+
+  .form-wrapper{
+    padding: 20px;
+  }
+
+  .form-row {
+    flex-direction: column; /* كل حقل في سطر لوحده */
+    gap: 10px;
+  }
+
+  .form-row label {
+    font-size: 16px;
+  }
+
+  .form-row input {
+    font-size: 18px;
+    padding: 10px;
+  }
+
+  button {
+    width: 100%;
+    font-size: 18px;
+    padding: 12px;
+  }
+
+  }
