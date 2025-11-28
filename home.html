@@ -47,9 +47,12 @@
       <input id="guarantor2Address" type="text">
     </div>
   </div>
-
   <!-- المبلغ -->
   <div class="form-row">
+      <div class="field">
+      <label> عدد كمبيالات</label>
+      <input id="numbers" type="number" min="0">
+    </div>
     <div class="field">
       <label>المبلغ بالدينار</label>
       <input id="amountDinar" type="number" min="0">
@@ -58,7 +61,10 @@
       <label>المبلغ بالفلس</label>
       <input id="amountFils" type="number" min="0" max="999">
     </div>
+
   </div>
+
+
 
   <!-- نص الدفع -->
   <div class="form-row">
@@ -89,7 +95,6 @@
 
   <!-- أزرار التحكم -->
   <div class="buttons">
-    <button id="btnAdd">➕ إضافة كمبيالة</button>
     <button id="btnExport">🖨️ طباعة PDF</button>
   </div>
 </div>

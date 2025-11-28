@@ -14,12 +14,11 @@ function numberToArabicWords(number) {
   let scale = 0;
 
   while (number > 0) {
-    const chunk = number % 1000; // كل ثلاثة أرقام
+    const chunk = number % 1000;
     number = Math.floor(number / 1000);
 
     if (chunk > 0) {
       let chunkWords = [];
-
       const hundreds = Math.floor(chunk / 100);
       const remainder = chunk % 100;
 
@@ -30,11 +29,9 @@ function numberToArabicWords(number) {
       }
 
       if (remainder > 0) {
-        if (remainder < 10) {
-          chunkWords.push(ones[remainder]);
-        } else if (remainder < 20) {
-          chunkWords.push(teens[remainder - 10]);
-        } else {
+        if (remainder < 10) chunkWords.push(ones[remainder]);
+        else if (remainder < 20) chunkWords.push(teens[remainder - 10]);
+        else {
           const onesDigit = remainder % 10;
           const tensDigit = Math.floor(remainder / 10);
           if (onesDigit > 0) chunkWords.push(ones[onesDigit] + " و" + tens[tensDigit]);
@@ -44,7 +41,6 @@ function numberToArabicWords(number) {
 
       let chunkText = chunkWords.join(" و ");
 
-      // إضافة المقياس (ألف، مليون، مليار)
       if (scale > 0) {
         if (chunk === 1) chunkText = scales[scale];
         else if (chunk === 2) chunkText = scales[scale] + "ان";
@@ -60,25 +56,19 @@ function numberToArabicWords(number) {
   return words.join(" و ");
 }
 
-
+// تحديث نص المبلغ تلقائيًا
 document.getElementById("amountDinar").addEventListener("input", () => {
   const val = parseInt(document.getElementById("amountDinar").value) || 0;
   document.getElementById("amountText").value = numberToArabicWords(val) + " دينارًا فقط لا غير";
 });
-let count = 0;
 
-document.getElementById("btnAdd").onclick = () => {
-  count++; // ✅ عدد المرات اللي كبست فيها إضافة
-
+document.getElementById("btnExport").onclick = async () => {
   const today = new Date();
   const day = String(today.getDate()).padStart(2, "0");
   const month = String(today.getMonth() + 1).padStart(2, "0");
   const year = today.getFullYear();
   const todayDate = `${day}/${month}/${year}`;
 
-  const val = parseInt(document.getElementById("amountDinar").value) || 0;
-  const amountWords = numberToArabicWords(val);
-  
   const data = {
     debtor: document.getElementById("debtor").value,
     debtorAddress: document.getElementById("debtorAddress").value,
@@ -91,50 +81,22 @@ document.getElementById("btnAdd").onclick = () => {
     payTo: document.getElementById("payTo").value,
     dueDate: document.getElementById("dueDate").value,
     issueDate: document.getElementById("issueDate").value,
-    todayDate: todayDate,
-    serial: "" // سنحسبها بعد لحظة
+    todayDate: todayDate
   };
 
-  promissories.push(data);
+  const numbersOfPromissory = parseInt(document.getElementById("numbers").value) || 1;
 
-  // ✅ تحديث أرقام التسلسل لكل الكَمبيالات
-  promissories.forEach((p, i) => {
-    p.serial = `${i + 1}/${count}`;
-    const val2 = parseInt(p.amountDinar) || 0;
-    const amountWords2 = numberToArabicWords(val2);
-    p.amountText = `${amountWords2} دينارًا فقط لا غير`;
-  });
-
-Swal.fire({
-  title: '✅ تمت الإضافة بنجاح!',
-  text: `تمت إضافة كمبيالة رقم ${count}`,
-  icon: 'success',
-  confirmButtonText: 'حسناً',
-  confirmButtonColor: '#3085d6'
-});
-};
-
-
-
-
-document.getElementById("btnExport").onclick = async () => {
-  if (promissories.length === 0) {
-  
-Swal.fire({
-  title: '⚠️ تحذير!',
-  text: " لم يتم إدخال أي كمبيالة",
-  icon: 'success',
-  confirmButtonText: 'حسناً',
-  confirmButtonColor: '#3085d6'
-});
-
-    return;
+  let promissories = [];
+  for (let i = 0; i < numbersOfPromissory; i++) {
+    let copy = { ...data };
+    copy.serial = `${i + 1}/${numbersOfPromissory}`;
+    copy.amountText = `${numberToArabicWords(parseInt(copy.amountDinar) || 0)} دينارًا فقط لا غير`;
+    promissories.push(copy);
   }
 
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF("p", "pt", "a4");
 
-  // تحميل صورة الخلفية
   const img = new Image();
   img.src = "template.jpg";
   await new Promise(r => { img.onload = r; });
@@ -142,137 +104,49 @@ Swal.fire({
   const pageW = pdf.internal.pageSize.getWidth();
   const pageH = pdf.internal.pageSize.getHeight();
 
-  // إضافة الخط العربي
   pdf.addFileToVFS("Amiri-Regular.ttf", amiriFontBase64);
   pdf.addFont("Amiri-Regular.ttf", "Amiri", "normal");
   pdf.setFont("Amiri");
   pdf.setFontSize(12);
 
-  // رسم كل كمبيالة
   promissories.forEach((p, i) => {
     if (i > 0 && i % 3 === 0) pdf.addPage();
-// لو كمبيالة وحدة 
-if (promissories.length === 1) {
-  const w = pageW - 100; 
-  const ratio = w / img.width; 
-  const h = img.height * ratio; 
-  const x = (pageW - w) / 2; 
-  const y = (pageH - h) / 2; 
-  pdf.addImage(img, "JPEG", x, y, w, h); 
+
+    let marginX = 30;
+    let marginY = 20;
+    let usableH = pageH - 60;
+    let boxH = usableH / 3;
+    let boxW = pageW - 60;
+    let idxOnPage = i % 3;
+    let yTop = marginY + idxOnPage * boxH;
+
+    pdf.addImage(img, "JPEG", marginX, yTop, boxW, boxH);
 
     // أسماء وعناوين
-    pdf.text(p.debtor, x + 420, y + 24, { align: "right" });
-    pdf.text(p.debtorAddress, x + 240, y + 24, { align: "right" });
-    pdf.text(p.guarantor1, x + 420, y + 40, { align: "right" });
-    pdf.text(p.guarantor1Address, x + 240, y + 40, { align: "right" });
-    pdf.text(p.guarantor2, x + 420, y + 60, { align: "right" });
-    pdf.text(p.guarantor2Address, x + 240, y + 60, { align: "right" });
+    pdf.text(p.debtor, pageW - 114, yTop + 20, { align: "right" });
+    pdf.text(p.debtorAddress, pageW - 305, yTop + 20, { align: "right" });
+    pdf.text(p.guarantor1, pageW - 114, yTop + 35, { align: "right" });
+    pdf.text(p.guarantor1Address, pageW - 305, yTop + 35, { align: "right" });
+    pdf.text(p.guarantor2, pageW - 114, yTop + 53, { align: "right" });
+    pdf.text(p.guarantor2Address, pageW - 305, yTop + 53, { align: "right" });
+
     // المبالغ
-    pdf.text(`${p.amountDinar}`, x + 260, y + 109, { align: "right" });
-    pdf.text(`${p.amountFils}`, x + 300, y + 109, { align: "right" });
-    pdf.text(p.amountText, x + 330, y + 160, { align: "right" });
-    // الدفع لأمر
-    pdf.text(p.payTo, x + 180, y + 138, { align: "right" });
-
-    // التواريخ والمكان
-    pdf.text(p.dueDate, x + 135, y + 113, { align: "right" });
-    pdf.text("النصف", 480, y + 108, { align: "right" });
-    pdf.text("النصف",380, y + 185, { align: "right" });
-// إعداد التاريخ مع مسافات
-const parts = p.issueDate.split(/[\/\-]/);
-const spacedDate = parts.join("        "); // add spacing between day, month, year
-
-
-pdf.text(spacedDate, x + 400, y + h - 17, { align: "right" });
-
-
-pdf.text(p.todayDate, x + 320, y + h - 154, { align: "right" });
-
-
-}  
-  // لو كمبيالتين 
-  else if (promissories.length === 2) {
-     const w = pageW - 100;
-      const h = (pageH - 60) / 2; 
-      const x = (pageW - w) / 2; 
-      const y = 30 + i * h;
-       pdf.addImage(img, "JPEG", x, y, w, h); 
-       pdf.text(p.debtor, x + 420, y + 30, {align: "right" }); 
-       pdf.text(p.guarantor1, x + 420, y + 57, { align: "right" });
-        pdf.text(p.guarantor2, x + 420, y + 78, { align: "right" });
-         pdf.text(p.debtorAddress, x + 240, y + 30, { align: "right" }); 
-         pdf.text(p.guarantor1Address, x + 240, y + 57, { align: "right" }); 
-         pdf.text(p.guarantor2Address, x + 240, y + 78, { align: "right" }); 
-     //    pdf.text(p.amount, x + 200, y + 160, { align: "right" });
-    // المبالغ
-    pdf.text(`${p.amountDinar}`, x + 260, y + 155, { align: "right" });
-    pdf.text(`${p.amountFils}`, x + 300, y + 155, { align: "right" });
-    pdf.text(p.amountText, x + 330, y + 214, { align: "right" });
-
-    // الدفع لأمر
-    pdf.text(p.payTo, x + 180, y + 186, { align: "right" });
-
-    // التواريخ والمكان
-      pdf.text(p.dueDate, x + 135, y + 150, { align: "right" });
-const parts = p.issueDate.split(/[\/\-]/);
-const spacedDate = parts.join("        "); // add spacing between day, month, year
-pdf.text(p.todayDate, x + 320,  y + 190, { align: "right" });
-    pdf.text(p.serial, x + 180, y +116, { align: "right" });
- pdf.text("النص",x + 380, y + 244, { align: "right" });
-    pdf.text("النص", 480, y + 140, { align: "right" });
-
-pdf.text(spacedDate, x + 400, y + h - 22, { align: "right" });     
-
-
-          }
-     // لو 3 أو أكثر 
-else {
-  const marginX = 30;
-  const marginY = 20;
-  const usableH = pageH - 60;
-  const boxH = usableH / 3;
-  const boxW = pageW - 60;
-  const idxOnPage = i % 3;
-  const yTop = marginY + idxOnPage * boxH;
-
-  pdf.addImage(img, "JPEG", marginX, yTop, boxW, boxH);
-
-  // الأسماء والعناوين
-  pdf.text(p.debtor, pageW - 114, yTop + 20, { align: "right" });
-  pdf.text(p.debtorAddress, pageW - 305, yTop + 20, { align: "right" });
-
-  pdf.text(p.guarantor1, pageW - 114, yTop + 35, { align: "right" });
-  pdf.text(p.guarantor1Address, pageW - 305, yTop + 35, { align: "right" });
-
-  pdf.text(p.guarantor2, pageW - 114, yTop + 53, { align: "right" });
-  pdf.text(p.guarantor2Address, pageW - 305, yTop + 53, { align: "right" });
-
-  // المبالغ
-  pdf.text(`${p.amountDinar}`, pageW -290 , yTop + 100, { align: "right" });
-  pdf.text(`${p.amountFils}`, pageW -250 , yTop + 100, { align: "right" });
-  pdf.text(p.amountText, pageW - 200, yTop + 142, { align: "right" });
+    pdf.text(`${p.amountDinar}`, pageW -290 , yTop + 100, { align: "right" });
+    pdf.text(`${p.amountFils}`, pageW -250 , yTop + 100, { align: "right" });
+    pdf.text(p.amountText, pageW - 200, yTop + 142, { align: "right" });
     pdf.text(p.serial, pageW - 380, yTop + 80, { align: "right" });
     pdf.text("النصف", pageW - 114, yTop + 94, { align: "right" });
     pdf.text("النصف", pageW - 160, yTop + 164, { align: "right" });
 
-  // الدفع لأمر
-  pdf.text(p.payTo, pageW - 380, yTop + 127, { align: "right" });
+    pdf.text(p.payTo, pageW - 380, yTop + 127, { align: "right" });
 
-  // التواريخ والمكان
-  pdf.text(p.dueDate, pageW - 420, yTop + 104, { align: "right" });
-  const parts = p.issueDate.split(/[\/\-]/);
-const spacedDate = parts.join("         "); // add spacing between day, month, year
-pdf.text(p.todayDate,  pageW - 220, yTop + 127, { align: "right" });
+    pdf.text(p.dueDate, pageW - 420, yTop + 104, { align: "right" });
+    const parts = p.issueDate.split(/[\/\-]/);
+    const spacedDate = parts.join("         ");
+    pdf.text(p.todayDate, pageW - 220, yTop + 127, { align: "right" });
+    pdf.text(spacedDate, pageW - 137, yTop + boxH - 16, { align: "right" });
+  });
 
-
-  pdf.text(spacedDate, pageW - 137, yTop + boxH - 16, { align: "right" });
-}
-
-        });
-
- 
-
-  // 🔹 فتح نافذة للطباعة بدل الحفظ
   const blob = pdf.output("blob");
   const blobUrl = URL.createObjectURL(blob);
   const printWindow = window.open(blobUrl, "_blank");
@@ -284,12 +158,11 @@ pdf.text(p.todayDate,  pageW - 220, yTop + 127, { align: "right" });
     };
   } else {
     Swal.fire({
-  title: '⚠️ تحذير!',
-  text: " الرجاء السماح بفتح النوافذ المنبثقة (Pop-ups) للطباعة",
-  icon: 'success',
-  confirmButtonText: 'حسناً',
-  confirmButtonColor: '#3085d6'
-});
-
+      title: '⚠️ تحذير!',
+      text: " الرجاء السماح بفتح النوافذ المنبثقة (Pop-ups) للطباعة",
+      icon: 'success',
+      confirmButtonText: 'حسناً',
+      confirmButtonColor: '#3085d6'
+    });
   }
 };
