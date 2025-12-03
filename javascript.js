@@ -61,7 +61,6 @@ document.getElementById("amountDinar").addEventListener("input", () => {
   const val = parseInt(document.getElementById("amountDinar").value) || 0;
   document.getElementById("amountText").value = numberToArabicWords(val) + " دينارًا فقط لا غير";
 });
-
 document.getElementById("btnExport").onclick = async () => {
   const today = new Date();
   const day = String(today.getDate()).padStart(2, "0");
@@ -91,8 +90,21 @@ document.getElementById("btnExport").onclick = async () => {
   let promissories = [];
   for (let i = 0; i < numbersOfPromissory; i++) {
     let copy = { ...data };
+
+    // 🔥 حساب تاريخ استحقاق مختلف لكل سند (زيادة شهر لكل واحد)
+    let baseDue = new Date(data.dueDate);
+    let customDue = new Date(baseDue);
+    customDue.setMonth(customDue.getMonth() + i);
+
+    let dd = String(customDue.getDate()).padStart(2, "0");
+    let mm = String(customDue.getMonth() + 1).padStart(2, "0");
+    let yyyy = customDue.getFullYear();
+    copy.dueDate = `${dd}/${mm}/${yyyy}`;
+    // 🔥 النهاية
+
     copy.serial = `${i + 1}/${numbersOfPromissory}`;
     copy.amountText = `${numberToArabicWords(parseInt(copy.amountDinar) || 0)} دينارًا فقط لا غير`;
+
     promissories.push(copy);
   }
 
@@ -133,8 +145,8 @@ document.getElementById("btnExport").onclick = async () => {
     pdf.text(p.guarantor2Address, pageW - 305, yTop + 53, { align: "right" });
 
     // المبالغ
-    pdf.text(`${p.amountDinar}`, pageW -290 , yTop + 100, { align: "right" });
-    pdf.text(`${p.amountFils}`, pageW -250 , yTop + 100, { align: "right" });
+    pdf.text(`${p.amountDinar}`, pageW - 290, yTop + 100, { align: "right" });
+    pdf.text(`${p.amountFils}`, pageW - 250, yTop + 100, { align: "right" });
     pdf.text(p.amountText, pageW - 200, yTop + 142, { align: "right" });
     pdf.text(p.serial, pageW - 380, yTop + 80, { align: "right" });
     pdf.text(p.Paymentby, pageW - 114, yTop + 94, { align: "right" });
@@ -143,6 +155,7 @@ document.getElementById("btnExport").onclick = async () => {
     pdf.text(p.payTo, pageW - 380, yTop + 127, { align: "right" });
 
     pdf.text(p.dueDate, pageW - 420, yTop + 104, { align: "right" });
+
     const parts = p.issueDate.split(/[\/\-]/);
     const spacedDate = parts.join("         ");
     pdf.text(p.todayDate, pageW - 220, yTop + 127, { align: "right" });
