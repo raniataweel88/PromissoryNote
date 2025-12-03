@@ -158,7 +158,7 @@ document.getElementById("btnExport").onclick = async () => {
 
     const parts = p.issueDate.split(/[\/\-]/);
     const spacedDate = parts.join("         ");
-    pdf.text(p.todayDate, pageW - 220, yTop + 127, { align: "right" });
+    pdf.text(p.dueDate, pageW - 220, yTop + 127, { align: "right" });
     pdf.text(spacedDate, pageW - 137, yTop + boxH - 16, { align: "right" });
   });
 
