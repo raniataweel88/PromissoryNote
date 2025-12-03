@@ -1,88 +1,185 @@
-📄 Promissory Note Generator (PDF)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promissory Note Generator README</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+    color: #333;
+    background-color: #f9f9f9;
+  }
 
-A professional promissory note generator that creates ready-to-print PDF documents based on debtor information, guarantor details, amount, payment method, and number of notes.
-Supports Arabic fonts, generates multiple notes per page, and prints directly.
+  h1, h2, h3 {
+    text-align: center;
+    color: #2c3e50;
+  }
 
-🚀 Features
+  h1 {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+  }
 
-Generate ready-to-print PDF promissory notes
+  h2 {
+    font-size: 1.8em;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
 
-Create multiple notes at once
+  h3 {
+    font-size: 1.4em;
+    margin-top: 30px;
+    margin-bottom: 10px;
+  }
 
-Automatically add +1 month to each due date
+  p {
+    margin: 10px 0;
+    text-align: justify;
+  }
 
-Full Arabic font support (Amiri)
+  pre {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+  }
 
-Auto-open print window after generating PDF
+  code {
+    font-family: Consolas, monospace;
+    background-color: #eee;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
 
-Uses a background template image
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    text-align: center;
+  }
 
-Automatic serial numbering (1/5, 2/5, 3/5 …)
+  table th, table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+  }
 
-🛠️ Technologies Used
+  table th {
+    background-color: #2980b9;
+    color: white;
+  }
 
-.JavaScript
+  table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
 
-.jsPDF
+  ul {
+    list-style: disc;
+    margin-left: 40px;
+  }
 
-.SweetAlert2
+  .center {
+    text-align: center;
+  }
 
-.HTML & CSS
+  a {
+    color: #2980b9;
+    text-decoration: none;
+  }
 
-.Amiri Arabic Font (Base64)
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
 
-.JPEG Template Image
+<h1>📄 Promissory Note Generator (PDF)</h1>
 
+<p class="center">A professional promissory note generator that creates ready-to-print PDF documents based on debtor information, guarantor details, the amount, payment method, and the number of notes. It supports Arabic fonts, generates multiple notes per page, and allows direct printing.</p>
 
-🧩 How to Use
+<h2>🚀 Features</h2>
+<ul>
+  <li>Generate ready-to-print PDF promissory notes</li>
+  <li>Create multiple notes at once</li>
+  <li>Automatic <strong>+1 month</strong> increment for each note's due date</li>
+  <li>Arabic font support (Amiri) inside PDF</li>
+  <li>Automatically opens the print window</li>
+  <li>Uses a background template image</li>
+  <li>Auto serial numbering (1/5, 2/5, 3/5 …)</li>
+</ul>
 
-Fill in debtor and guarantor information
+<h2>🛠️ Technologies Used</h2>
+<ul>
+  <li>JavaScript</li>
+  <li>jsPDF</li>
+  <li>SweetAlert2</li>
+  <li>HTML & CSS</li>
+  <li>Amiri Arabic Font (Base64)</li>
+  <li>JPEG Template Image</li>
+</ul>
 
-1.Enter the amount (Dinar & Fils)
+<h2>📂 How to Run the Project</h2>
+<h3>1️⃣ Clone the repository</h3>
+<pre><code>git clone https://github.com/raniataweel88/PromissoryNote.git</code></pre>
 
-2.Enter the issue date
+<h3>2️⃣ Open the project folder</h3>
+<p>Open the folder using VS Code or any text editor.</p>
 
-3.Enter the due date
+<h3>3️⃣ Run the project</h3>
+<p>Open the file <code>index.html</code> in your browser.</p>
 
-4.Choose the number of promissory notes
+<h2>🔗 Live Demo</h2>
+<p class="center">See the running version here: <a href="https://promissorynote.netlify.app/" target="_blank">https://promissorynote.netlify.app/</a></p>
 
-5.Click Generate
+<h2>🧩 How to Use</h2>
+<ul>
+  <li>Enter debtor and guarantor information</li>
+  <li>Enter the amount in Dinar and Fils</li>
+  <li>Enter the issue date</li>
+  <li>Enter the due date</li>
+  <li>Select the number of promissory notes</li>
+  <li>Click <strong>Generate</strong> to create the PDF</li>
+</ul>
 
-A PDF will be created with all notes included.
+<h2>📅 Due Date Auto-Increment Example</h2>
+<p>If the original due date is <code>27/01/2025</code> and you select <strong>5 notes</strong>, the system will generate the following due dates:</p>
 
-📅 Due Date Auto-Increment Example
+<table>
+  <tr>
+    <th>Note Number</th>
+    <th>Due Date</th>
+  </tr>
+  <tr><td>1</td><td>27/01/2025</td></tr>
+  <tr><td>2</td><td>27/02/2025</td></tr>
+  <tr><td>3</td><td>27/03/2025</td></tr>
+  <tr><td>4</td><td>27/04/2025</td></tr>
+  <tr><td>5</td><td>27/05/2025</td></tr>
+</table>
 
-If the original due date is:
-
-27/01/2025
-
-
-and you choose 5 notes, the system will generate:
-
-Note	Due Date
-1	27/01/2025
-2	27/02/2025
-3	27/03/2025
-4	27/04/2025
-5	27/05/2025
-📁 Project Structure
+<h2>📁 Project Structure</h2>
+<pre><code>
 PromissoryNote/
 │── index.html
 │── script.js
 │── style.css
 │── template.jpg
 │── amiriFontBase64.js
-│── README.md
+│── README.html
+</code></pre>
 
-📜 License
+<h2>📜 License</h2>
+<p>This project is free and open-source.</p>
 
-This project is free and open-source.
+<h2>👩‍💻 Developer</h2>
+<p class="center"><strong>Rania Taweel</strong></p>
 
-👩‍💻 Developer
+<h2>⭐ Support the Project</h2>
+<p class="center">If you like this project, please give it a <a href="https://github.com/raniataweel88/PromissoryNote" target="_blank">⭐ on GitHub</a>!</p>
 
-Rania Taweel
-
-⭐ the link of project
-https://promissorynote.netlify.app/
-
-
+</body>
+</html>
