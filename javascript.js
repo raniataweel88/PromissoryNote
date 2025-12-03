@@ -81,7 +81,9 @@ document.getElementById("btnExport").onclick = async () => {
     payTo: document.getElementById("payTo").value,
     dueDate: document.getElementById("dueDate").value,
     issueDate: document.getElementById("issueDate").value,
-    todayDate: todayDate
+    todayDate: todayDate,
+    Paymentby: document.getElementById("Paymentby").value,
+    amountWeReceived: document.getElementById("amountWeReceived").value,
   };
 
   const numbersOfPromissory = parseInt(document.getElementById("numbers").value) || 1;
@@ -135,8 +137,8 @@ document.getElementById("btnExport").onclick = async () => {
     pdf.text(`${p.amountFils}`, pageW -250 , yTop + 100, { align: "right" });
     pdf.text(p.amountText, pageW - 200, yTop + 142, { align: "right" });
     pdf.text(p.serial, pageW - 380, yTop + 80, { align: "right" });
-    pdf.text("النصف", pageW - 114, yTop + 94, { align: "right" });
-    pdf.text("النصف", pageW - 160, yTop + 164, { align: "right" });
+    pdf.text(p.Paymentby, pageW - 114, yTop + 94, { align: "right" });
+    pdf.text(p.amountWeReceived, pageW - 160, yTop + 164, { align: "right" });
 
     pdf.text(p.payTo, pageW - 380, yTop + 127, { align: "right" });
 
